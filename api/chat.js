@@ -71,7 +71,7 @@ export default async function handler(req, res) {
         const geminiPayload = {
             contents: contents,
             systemInstruction: { parts: [{ text: fullSystemInstruction }] },
-            // 修正：Gemini API 官方規定的工具名稱必須是底線分隔的 google_search
+            // 修正：Gemini API 官方規規定的工具名稱必須是底線分隔的 google_search
             tools: [{ google_search: {} }] 
         };
         // -------------------------------------
