@@ -76,7 +76,8 @@ export default async function handler(req, res) {
         };
         // -------------------------------------
 
-        const googleApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        // 已將模型修正為 Google 官方最新穩定版本 gemini-2.0-flash
+        const googleApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
         
         const response = await fetch(googleApiUrl, {
             method: 'POST',
@@ -96,4 +97,3 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: '後端伺服器發生未預期的錯誤' });
     }
 }
-
