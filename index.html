@@ -9,11 +9,10 @@
         body { 
             margin: 0; 
             overflow: hidden; 
-            background-color: #0f172a; /* 柔和的深海藍，不刺眼 */
+            background-color: #0f172a; 
             touch-action: none; 
             font-family: system-ui, -apple-system, sans-serif;
         }
-        
         #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 0; }
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
         .pointer-events-auto { pointer-events: auto; }
@@ -36,22 +35,17 @@
     <div id="canvas-container"></div>
 
     <div id="ui-layer" class="flex flex-col justify-end p-4 relative">
-        
         <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] sm:w-full max-w-lg pointer-events-auto flex flex-col gap-3 bg-slate-800/60 backdrop-blur-lg p-4 rounded-2xl shadow-lg border border-slate-600/50 z-10 transition-all duration-300">
-            
             <div id="chat-bubble" class="hidden px-2 max-h-40 overflow-y-auto no-scrollbar">
                 <p id="chat-text" class="text-lg text-slate-100 font-medium leading-relaxed drop-shadow-sm"></p>
             </div>
-
             <div class="flex gap-2 w-full">
                 <button id="mic-btn" class="bg-slate-700/50 hover:bg-slate-600/60 text-blue-300 px-3 py-3 rounded-xl shadow-inner border border-slate-500/30 transition-colors shrink-0 flex items-center justify-center" title="語音輸入">
                     <svg id="mic-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
                     </svg>
                 </button>
-
                 <input type="text" id="chat-input" placeholder="與角色對話..." class="flex-1 bg-slate-900/50 text-slate-100 placeholder-slate-400 px-4 py-3 rounded-xl border border-slate-600 focus:outline-none focus:border-blue-400 focus:bg-slate-800/80 shadow-inner text-base transition-colors" />
-                
                 <button id="send-btn" class="bg-blue-600/90 hover:bg-blue-500 active:scale-95 text-white px-5 py-3 rounded-xl shadow transition-all duration-150 font-bold text-base shrink-0">發送</button>
             </div>
         </div>
@@ -66,10 +60,7 @@
                 </div>
                 <p class="text-xs text-slate-300">系統已載入模型。可以直接開始對話。</p>
                 <div id="loading-status" class="mt-3 text-xs text-yellow-400 flex items-center justify-center">
-                    <svg class="animate-spin -ml-1 mr-2 h-3 w-3 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    <svg class="animate-spin -ml-1 mr-2 h-3 w-3 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                     模型載入中...
                 </div>
                 <div id="error-status" class="mt-3 text-xs text-red-400 hidden text-center"></div>
@@ -93,7 +84,7 @@
 
         let scene, camera, renderer, controls;
         let currentVrm = undefined;
-        let particles; // 科技數據流粒子
+        let particles;
         const clock = new THREE.Clock();
 
         let knowledgeBaseText = "";
@@ -110,7 +101,7 @@
         let isSpeaking = false;
         let lipSyncTimer = 0;
         
-        let conversationHistory = []; // 初始化對話紀錄
+        let conversationHistory = []; 
 
         async function loadConfig() {
             try {
@@ -144,10 +135,6 @@
             chatBubble.classList.remove('hidden');
             chatText.innerHTML = `${openingPhrase}`;
             speakAndLipSync(openingPhrase);
-            
-            // 【重要修復】：不要把開場白推入 conversationHistory 中！
-            // Gemini API 嚴格要求歷史紀錄必須從 user 角色開始，如果從 model 開始會報錯 400 Bad Request。
-            // conversationHistory.push(...) 被移除了
         }
 
         async function init() {
@@ -155,7 +142,7 @@
             await loadConfig();
 
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0f172a); // 柔和深色
+            scene.background = new THREE.Color(0x0f172a);
             scene.fog = new THREE.Fog(0x0f172a, 8, 25);
 
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -183,7 +170,6 @@
         }
 
         function setupEnvironment() {
-            // 護眼溫和燈光
             const ambientLight = new THREE.HemisphereLight(0xffffff, 0x444455, 0.7);
             scene.add(ambientLight);
 
@@ -199,7 +185,6 @@
             fillLight.position.set(-2, 2, 2);
             scene.add(fillLight);
 
-            // 乾淨深色地板
             const floorGeometry = new THREE.PlaneGeometry(50, 50);
             const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9, metalness: 0.1 });
             const floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -207,26 +192,22 @@
             floor.receiveShadow = true;
             scene.add(floor);
 
-            // 科技感網格
             const gridHelper = new THREE.GridHelper(50, 100, 0x3b82f6, 0x1e293b);
             gridHelper.position.y = 0.01;
             gridHelper.material.transparent = true;
             gridHelper.material.opacity = 0.3;
             scene.add(gridHelper);
 
-            // 科技風粒子 (數據流向上升)
             const particleCount = 150;
             const particleGeometry = new THREE.BufferGeometry();
             const particlePositions = new Float32Array(particleCount * 3);
             for(let i = 0; i < particleCount; i++) {
-                // 將粒子分佈在角色周圍
                 particlePositions[i*3] = (Math.random() - 0.5) * 8; 
-                particlePositions[i*3+1] = Math.random() * 4;       // Y 軸
+                particlePositions[i*3+1] = Math.random() * 4;       
                 particlePositions[i*3+2] = (Math.random() - 0.5) * 8; 
             }
             particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
             
-            // 粒子材質改為方塊狀、科技藍色
             const particleMaterial = new THREE.PointsMaterial({ 
                 color: 0x60a5fa, 
                 size: 0.04, 
@@ -253,6 +234,15 @@
                         obj.frustumCulled = false;
                         if (obj.isMesh) { obj.castShadow = true; obj.receiveShadow = true; }
                     });
+                    
+                    // 【修復】：把手臂放下來的骨骼旋轉加回來
+                    if (vrm.humanoid) {
+                        const leftUpperArm = vrm.humanoid.getNormalizedBoneNode('leftUpperArm');
+                        const rightUpperArm = vrm.humanoid.getNormalizedBoneNode('rightUpperArm');
+                        if (leftUpperArm) leftUpperArm.rotation.z = -1.1; 
+                        if (rightUpperArm) rightUpperArm.rotation.z = 1.1; 
+                    }
+
                     vrm.scene.position.y = 0.1;
                     vrm.scene.rotation.y = Math.PI;
                     scene.add(vrm.scene);
@@ -270,42 +260,50 @@
         function animate() {
             requestAnimationFrame(animate);
             const delta = clock.getDelta();
+            const time = clock.getElapsedTime(); // 【修復】：抓取時間用於呼吸動畫
             
-            if (currentVrm && currentVrm.expressionManager) {
-                expressionTimer += delta;
-                if (expressionTimer > 4.0) {
-                    expressionTimer = 0; currentExpression = targetExpression;
-                    targetExpression = expressions[Math.floor(Math.random() * expressions.length)];
-                    expressionBlend = 0;
+            if (currentVrm) {
+                // 【修復】：胸腔呼吸動畫加回來
+                if (currentVrm.humanoid) {
+                    const chest = currentVrm.humanoid.getNormalizedBoneNode('chest');
+                    if (chest) chest.rotation.x = Math.sin(time * 1.5) * 0.015;
                 }
-                if (expressionBlend < 1.0) expressionBlend = Math.min(1.0, expressionBlend + delta * 2.0);
-                expressions.forEach(exp => currentVrm.expressionManager.setValue(exp, 0));
-                
-                if (specialActionTimer > 0 && activeSpecialAction) {
-                    specialActionTimer -= delta; currentVrm.expressionManager.setValue(activeSpecialAction, 1.0);
-                } else if (activeSpecialAction) {
-                    currentVrm.expressionManager.setValue(activeSpecialAction, 0); activeSpecialAction = null;
-                }
-                
-                if (isSpeaking) {
-                    currentVrm.expressionManager.setValue('happy', 1.0);
-                    lipSyncTimer += delta * 15;
-                    const mouthOpenness = (Math.sin(lipSyncTimer) + 1) / 2; 
-                    if (activeSpecialAction !== 'aa') currentVrm.expressionManager.setValue('aa', mouthOpenness * (Math.random() * 0.4 + 0.6));
-                } else {
-                    currentVrm.expressionManager.setValue(currentExpression, 1.0 - expressionBlend);
-                    currentVrm.expressionManager.setValue(targetExpression, expressionBlend);
-                    if (activeSpecialAction !== 'aa') currentVrm.expressionManager.setValue('aa', 0);
+
+                if (currentVrm.expressionManager) {
+                    expressionTimer += delta;
+                    if (expressionTimer > 4.0) {
+                        expressionTimer = 0; currentExpression = targetExpression;
+                        targetExpression = expressions[Math.floor(Math.random() * expressions.length)];
+                        expressionBlend = 0;
+                    }
+                    if (expressionBlend < 1.0) expressionBlend = Math.min(1.0, expressionBlend + delta * 2.0);
+                    expressions.forEach(exp => currentVrm.expressionManager.setValue(exp, 0));
+                    
+                    if (specialActionTimer > 0 && activeSpecialAction) {
+                        specialActionTimer -= delta; currentVrm.expressionManager.setValue(activeSpecialAction, 1.0);
+                    } else if (activeSpecialAction) {
+                        currentVrm.expressionManager.setValue(activeSpecialAction, 0); activeSpecialAction = null;
+                    }
+                    
+                    if (isSpeaking) {
+                        currentVrm.expressionManager.setValue('happy', 1.0);
+                        lipSyncTimer += delta * 15;
+                        const mouthOpenness = (Math.sin(lipSyncTimer) + 1) / 2; 
+                        if (activeSpecialAction !== 'aa') currentVrm.expressionManager.setValue('aa', mouthOpenness * (Math.random() * 0.4 + 0.6));
+                    } else {
+                        currentVrm.expressionManager.setValue(currentExpression, 1.0 - expressionBlend);
+                        currentVrm.expressionManager.setValue(targetExpression, expressionBlend);
+                        if (activeSpecialAction !== 'aa') currentVrm.expressionManager.setValue('aa', 0);
+                    }
                 }
                 currentVrm.update(delta);
             }
 
-            // 數據流粒子動畫 (緩慢向上升，出界後重置到下方)
             if (particles) {
                 const positions = particles.geometry.attributes.position.array;
                 for (let i = 1; i < positions.length; i += 3) {
-                    positions[i] += delta * 0.2; // Y軸緩慢上升
-                    if (positions[i] > 4.0) positions[i] = 0; // 重置高度
+                    positions[i] += delta * 0.2; 
+                    if (positions[i] > 4.0) positions[i] = 0; 
                 }
                 particles.geometry.attributes.position.needsUpdate = true;
             }
@@ -335,17 +333,6 @@
             else statusLight.className += 'bg-green-500';
         }
 
-        async function fetchWithBackoff(url, options, maxRetries = 2) {
-            for (let i = 0; i < maxRetries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.ok) return response;
-                } catch (error) {
-                    if (i === maxRetries - 1) throw error;
-                }
-            }
-        }
-
         async function sendMessage() {
             const text = chatInput.value.trim();
             if (!text) return;
@@ -354,13 +341,13 @@
             chatText.innerHTML = `<span class="text-blue-200 text-sm opacity-70">你：${text}</span><br><span class="text-slate-300 text-sm animate-pulse">正在思考中...</span>`;
             setStatus('connecting');
             
-            // 推送使用者訊息到紀錄
             conversationHistory.push({ role: "user", parts: [{ text: text }] });
             
             const safeFullSystemInstruction = `${systemPromptText}\n\n【重要指示】請優先使用知識庫回答。你的名字是『美智』。\n\n【知識庫內容】\n${knowledgeBaseText}`;
 
             try {
-                const response = await fetchWithBackoff(`/api/chat`, {
+                // 【修復】：移除複雜的重試機制，直接發送一次就好，避免短時間狂打 API 造成 429 錯誤
+                const response = await fetch(`/api/chat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -369,8 +356,12 @@
                         knowledgeBase: knowledgeBaseText 
                     })
                 });
+                
                 const data = await response.json();
-                if (data.error) throw new Error(data.error);
+                
+                if (!response.ok || data.error) {
+                    throw new Error(data.error || `HTTP error! status: ${response.status}`);
+                }
                 
                 const aiText = data.candidates[0].content.parts[0].text;
                 let replyText = aiText;
@@ -389,13 +380,11 @@
                 chatText.innerHTML = `<span class="text-slate-100">${replyText}</span>`;
                 speakAndLipSync(replyText);
                 
-                // 推送 AI 訊息到紀錄，確保一問一答順序正確
                 conversationHistory.push({ role: "model", parts: [{ text: jsonMatch ? jsonMatch[0] : aiText }] });
             } catch (error) {
                 console.error("發送訊息失敗:", error);
                 setStatus('error');
-                chatText.innerHTML = `<span class="text-red-400 font-bold">連線失敗。請確認 API 金鑰或網路狀態。</span>`;
-                // 若失敗則把剛剛 push 的 user 移除，避免紀錄順序錯亂
+                chatText.innerHTML = `<span class="text-red-400 font-bold">連線失敗。請確認 API 金鑰或網路狀態。(${error.message})</span>`;
                 conversationHistory.pop();
             }
         }
